@@ -7,10 +7,16 @@
 This News Aggregator API implement some useful design patterns that helps to increase maintainability by reducing the coupled, whitch provides a good code structure. Therefore we start to talk about design patterns.
 
 
-## Patterns that nestjs use
+## Patterns that NestJS use
 * **Singleton:**  is used by NestJS making every of its components a singleton across the module. Even modules are *singletons* by default, with the purpose that you can share the same instance of any provider between multiple modules effortlessly, so you don't need to create a new instance in runtime every time another component need a particular service.
 
 * **Dependency Injection:** Nestjs provides it out of the box, in order to enables you to replace *dependencies* without changing the class that uses them. So this might reduce the risk that you have to change a class just because one of its *dependencies* changed. To get this approach Nest delegate instantiation of dependencies to a IoC container, everytime you create a new component (provider) on your aplication, you make a registration process associating the token **nameService** with the class **nameService**. So when the Nest IoC container instantiates a Class (Let's call it **Component A**), it first looks for any dependencies. When it finds the dependency, it performs a lookup on the dependency token, which returns its respective class (let's call it **Component B**). Then Nest will then either create an instance of **Component B**, cache it, and return it, or if one is already cached, return the existing instance of **Component B**.
+
+* **Decorator:** The pattern is used heavily in the framework in order to attach new features and behaviors to already defined classes and methods. NestJS implement decorators using generics  `createParamDecorator<T>((data, ctx) => ...)`. That means you can explicitly enforce type safety, the expression returns a function and can take a target, name and property descriptor as arguments.
+
+* **Strategy:** NestJS has a library 'Passport' easily to integrate with, it works using the Strategy design pattern, separeting all its different implementation on strategies, so you can isolate the implementation details of an algorithm from the code that uses it.
+
+* **Repository:** Typeorm is database integration library that fits perfectly in NestJS, supports the *repository design pattern*, so each entity has its own repository. In simple words it deals with creating a set of data access services encapsulating CRUD operations. The implemented repositories are available out-of-the-box and can be obtained from the database connection.
 
 ## Possible design patterns for My News Aggregator API
 
@@ -154,6 +160,21 @@ export  class  NewsController {
 	}
 }
 ```
+
+**Builder:**
+*Previous code:*
+```javascript
+createRequest(params: ParamsNewsDto) {
+	let  url = '';
+	url += params.hasOwnProperty('q') ? 'q=' + params.q : '';
+	if (params.hasOwnProperty('oncontent')) {...}
+	if (params.hasOwnProperty('onsection')) {...}
+	if (params.hasOwnProperty('fromdate')) {...}
+	if (params.hasOwnProperty('todate')) {...}
+}
+```
+* In the previous code we can see that the creation of the queryParameters' url for each News API requires laborious step-by-step construction. For every news service, the request creation is builded using almost the same number of steps. **Builder Pattern** match with our intent of create different representations of our Request using the same construction code, at the same maintainable increases, so we can easely made changes on a *concrete builder* or in the construction steps.
+
 
 ## Removed Antipattens
 
