@@ -176,6 +176,57 @@ createRequest(params: ParamsNewsDto) {
 * In the previous code we can see that the creation of the queryParameters' url for each News API requires laborious step-by-step construction. For every news service, the request creation is builded using almost the same number of steps. **Builder Pattern** match with our intent of create different representations of our Request using the same construction code, at the same maintainable increases, so we can easely made changes on a *concrete builder* or in the construction steps.
 
 
+*Result code:*
+```javascript
+export  interface  Builder {
+	setQ(subquery: string): void;
+	setOnContent(subquery: string): void;
+	setOnSection(subquery: string): void;
+	setOnPage(subquery: string):void;
+	setKey(subquery: string, key: string | undefined):void;
+}
+
+ 
+export  class  TGQueryBuilder  implements  Builder {
+	private  params: ParamsNewsDto;
+	private  query: string = '';
+
+	constructor(params: ParamsNewsDto) {
+	this.params = params;
+	this.query+='';
+	}
+
+	public  setQ(subquery: string): void {
+		this.query += this.params.hasOwnProperty('q') ? subquery + this.params.q : '';
+	}
+
+	public  setOnContent(subquery: string): void {
+		if (this.params.hasOwnProperty('oncontent')) {
+			this.query +=
+				this.query.length > 3
+				? ' AND ' + this.params.oncontent + subquery
+				: 'q='+ this.params.oncontent + subquery;
+	}
+}
+
+export  class  BuilderDirector {
+	private  builder: Builder;
+	
+	public  setBuilder(builder: Builder): void {
+		this.builder = builder;
+	}
+	
+	public  buildTGQuery(): void {
+		this.builder.setQ('q=');
+		this.builder.setOnContent('&query-fields=body');
+		this.builder.setOnSection('section=');
+		this.builder.setOnPage('page=');
+		this.builder.setKey('&api-key=',process.env.TG_KEY);
+	}
+}
+```
+
+
 ## Removed Antipattens
 
 * **GOD Class:** A first it seem one service could be enough for handle request on two News Aggregator APIs, then when you have to add a new News Aggregator API thinks comes pretty difficult and also if you want to change something for your previous services the panorama gets dark! So, separeting every services by their respectives functions for a single News API clarify any maintenance attempt.

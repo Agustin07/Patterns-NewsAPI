@@ -3,6 +3,7 @@ import { ParamsNewsDto, NewsDto } from './dto/news.dto';
 import { HttpService } from '@nestjs/common';
 import {AxiosResponse} from 'Axios';
 import { AbstractClass } from './abstract.service';
+import {BuilderDirector, clientCodeTG } from './url.builder';
 
 @Injectable()
 class GuardianService extends AbstractClass {
@@ -40,6 +41,10 @@ class GuardianService extends AbstractClass {
   }
 
   createRequest(params: ParamsNewsDto) {
+    const director = new BuilderDirector();
+    const url2 = clientCodeTG(director,params);
+    
+
     let url = '';
     url += params.hasOwnProperty('q') ? 'q=' + params.q : '';
 
@@ -75,7 +80,10 @@ class GuardianService extends AbstractClass {
       url +=
         url.length > 3 ? '&page=' + params.onpage : 'page=' + params.onpage;
 
-    return url + '&api-key=' + process.env.TG_KEY;
+    url += '&api-key=' + process.env.TG_KEY;
+    console.log(url);
+    console.log(url2);
+    return url
   }
 }
 
