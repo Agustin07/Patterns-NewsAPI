@@ -46,7 +46,7 @@ The idea with dependency injection is that the **component A** should not have t
 
 Dependency injection suggest that dependencies should be passed already initialized over to the constructor. 
 *Example: Initials is dependent of Charmander class*
-```
+```javascript
 class Initials implements {
     private _fireInitial: Charmander;
 
@@ -61,7 +61,7 @@ This IoC container provibe an interface to retrieve  an instance of each compone
 >**InversifyJS Doc:** The classes are implementations of the interfaces that we just declared. All the classes must be annotated with the  `@injectable`  decorator.
 
 *Example:*
-```
+```javascript
 export interface Pokemon {
     quickAttack(): string;
     chargedAttack(): string;
@@ -88,7 +88,7 @@ class Charmander implements Pokemon {
 
 InversifyJS need to use the type as identifiers at runtime. We use symbols as identifiers but you can also use classes and or string literals.
 *Example:*
-```
+```javascript
 const TYPES = {
     Pokemon: Symbol.for("Pokemon"),
 };
@@ -98,14 +98,14 @@ export { TYPES };
 Everytime you create a new component on your aplication, you register it in the container, that way the IoC container knows exactly how each componen is initialize. 
 
 *Example:*
-```
+```javascript
 const myContainer = new Container();
 myContainer.bind<Pokemon>(TYPES.Pokemon).to(Charmander);
 export { myContainer };
 ```
 
 Finally we can resolve dependencies using our IoC Container.
-```
+```javascript
 import { myContainer, TYPES, Pokemon } "./example";
 
 const charmander = myContainer.get<Pokemon>(TYPES.Pokemon);
@@ -117,7 +117,7 @@ const charmander = myContainer.get<Pokemon>(TYPES.Pokemon);
 
 **Template Method:** is used in order to solving a **GOD Class antipattern**, allowing to separate services by the News Aggregator APIs to request and defines a common number of steps to accomplish to carry out the work.
 *Abstract class with common steps:*
-```
+```javascript
 export  abstract  class  AbstractClass {
 	public  async  templateMethod(params: ParamsNewsDto): Promise<NewsDto[]> {
 		const  queryParams = this.createRequest(params);
@@ -135,14 +135,14 @@ export  abstract  class  AbstractClass {
 Each service implement **createRequest**, **consume** and **parseNews** methods, and a **clientCode** function is created to decouple the *template method* of the Client
 
 *clientCode function:*
-```
+```javascript
 export  const  clientCode = async (abstractClass: AbstractClass,params: ParamsNewsDto): Promise<NewsDto[]> => {
 	return  await  abstractClass.templateMethod(params);
 }
 ```
 
 *example of a call in the controller:*
-```
+```javascript
 export  class  NewsController {
 	constructor( private  readonly  guardianService: GuardianService,) {}
 	
@@ -160,6 +160,8 @@ export  class  NewsController {
 * **GOD Class:** A first it seem one service could be enough for handle request on two News Aggregator APIs, then when you have to add a new News Aggregator API thinks comes pretty difficult and also if you want to change something for your previous services the panorama gets dark! So, separeting every services by their respectives functions for a single News API clarify any maintenance attempt.
 
 * **Spaghetti Code:** In order to add new features like adding articles or submitting recommendations, the two previous modules looked very messy and even if create one service for those features could be the easiest ways, the final decition was refactor the project structure taking the useful parts of code and separate it all in fourt modules by their own bussines logic every one of then.
+
+
 
 # API description
 
